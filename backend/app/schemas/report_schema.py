@@ -29,3 +29,4 @@ class ReportResponse(BaseModel):
     report_text: str
     authority_handle: str
     x_intent_url: str
+    plate_warning: Optional[str] = None

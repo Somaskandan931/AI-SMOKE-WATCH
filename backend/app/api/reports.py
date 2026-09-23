@@ -23,10 +23,13 @@ async def generate_report(payload: ReportRequest):
             detail="Reports can only be generated after visible smoke has been detected.",
         )
 
-    if not looks_like_valid_plate(payload.registration_number):
-        # Not a hard failure -- plates get manually corrected (FR-10) and
-        # formats vary by state/country -- but we surface a warning field.
-        pass
+    # Not a hard failure -- plates get manually corrected (FR-10) and
+    # formats vary by state/country -- so surface a warning instead.
+    plate_warning = (
+        None
+        if looks_like_valid_plate(payload.registration_number)
+        else "Registration format looks unusual. Please verify before posting."
+    )
 
     location = payload.place_name or (
         f"{payload.latitude:.5f}, {payload.longitude:.5f}"
@@ -50,4 +53,5 @@ async def generate_report(payload: ReportRequest):
         report_text=report["report_text"],
         authority_handle=report["authority_handle"],
         x_intent_url=report["x_intent_url"],
+        plate_warning=plate_warning,
     )

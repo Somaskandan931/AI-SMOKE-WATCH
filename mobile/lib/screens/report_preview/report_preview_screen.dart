@@ -48,7 +48,11 @@ class _ReportPreviewScreenState extends State<ReportPreviewScreen> {
   }
 
   Future<void> _reportOnX() async {
-    final opened = await _xShare.openPrefilledPost(widget.report.xIntentUrl!);
+    final opened = await _xShare.shareWithEvidence(
+      text: widget.report.reportText!,
+      intentUrl: widget.report.xIntentUrl!,
+      image: widget.report.vehicleImage,
+    );
     if (!mounted) return;
     if (opened) {
       Navigator.of(context).push(
@@ -56,7 +60,7 @@ class _ReportPreviewScreenState extends State<ReportPreviewScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open X. Please check that it is installed or try again.')),
+        const SnackBar(content: Text('Could not share the report. Please try again.')),
       );
     }
   }
@@ -80,10 +84,22 @@ class _ReportPreviewScreenState extends State<ReportPreviewScreen> {
             );
           }
           final data = snapshot.data!;
+          final plateWarning = data['plate_warning'] as String?;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
+                if (plateWarning != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(plateWarning)),
+                      ],
+                    ),
+                  ),
                 ReportCard(
                   registration: data['registration'] as String,
                   location: data['location'] as String,
@@ -111,7 +127,7 @@ class _ReportPreviewScreenState extends State<ReportPreviewScreen> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'You will review and submit the post yourself inside X — nothing is published automatically.',
+                  'Choose X in the share sheet. Your evidence photo is attached, and you post it yourself — nothing is published automatically.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 11),
                 ),

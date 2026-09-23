@@ -17,6 +17,7 @@ from typing import Optional, Tuple
 import numpy as np
 
 from app import config
+from app.utils.validation import looks_like_valid_plate
 
 _engine = None
 _engine_name = None
@@ -49,7 +50,11 @@ PLATE_PATTERN = re.compile(r"[^A-Z0-9]")
 
 
 def _clean(text: str) -> str:
-    return PLATE_PATTERN.sub("", text.upper())
+    cleaned = PLATE_PATTERN.sub("", text.upper())
+    # HSRP plates carry an "IND" marking that OCR reads as part of the number.
+    if cleaned.startswith("IND") and looks_like_valid_plate(cleaned[3:]):
+        cleaned = cleaned[3:]
+    return cleaned
 
 
 def read_plate(cropped_bgr: np.ndarray) -> Tuple[Optional[str], float, bool]:

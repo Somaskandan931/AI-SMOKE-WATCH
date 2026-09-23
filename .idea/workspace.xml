@@ -6,7 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="d56b5b0a-2780-4bba-ab55-ced316dedae7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/weights/smoke_yolov8s.pt" beforeDir="false" afterPath="$PROJECT_DIR$/ai/weights/smoke_yolov8s.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/api/reports.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/api/reports.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/schemas/report_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/schemas/report_schema.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/services/ocr_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/services/ocr_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/services/report_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/services/report_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/utils/image_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/utils/image_processing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/tests/test_end_to_end.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/tests/test_end_to_end.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/android/app/src/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/android/app/src/debug/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/lib/core/services/x_share_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/lib/core/services/x_share_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/lib/screens/report_preview/report_preview_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/lib/screens/report_preview/report_preview_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -35,7 +35,7 @@ def test_e2e_positive_flow_smoke_detected_to_report(client, smoky_image_bytes, t
             "smoke_confidence": detect_body["smoke_confidence"],
             "latitude": 13.0827,
             "longitude": 80.2707,
-            "location_name": "Chennai",
+            "place_name": "Chennai",
         },
     )
     assert report_resp.status_code == 200

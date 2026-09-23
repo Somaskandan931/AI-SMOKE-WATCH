@@ -15,16 +15,7 @@ class InvalidImageError(Exception):
 
 
 async def decode_upload_to_bgr(file: UploadFile) -> np.ndarray:
-    # Note: we intentionally do NOT gate on file.content_type here.
-    # Clients (Flutter's http.MultipartFile.fromPath in particular) often
-    # omit an explicit contentType and default to "application/octet-stream",
-    # which would fail a strict header check even though the bytes are a
-    # perfectly valid image. The real, trustworthy check is whether the
-    # bytes actually decode as an image -- so we do that instead, and only
-    # use ALLOWED_CONTENT_TYPES as an early filter for headers we DO trust
-    # (i.e. only reject when a content_type was provided AND is clearly
-    # not an image at all, e.g. "text/html" or "application/json").
-    if file.content_type and not file.content_type.startswith("image/") and file.content_type != "application/octet-stream":
+    if file.content_type not in ALLOWED_CONTENT_TYPES:
         raise InvalidImageError(f"Unsupported content type: {file.content_type}")
 
     raw = await file.read()

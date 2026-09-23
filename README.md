@@ -704,8 +704,6 @@ Flutter mobile, and supporting documentation/infrastructure.
 │
 ├── docker-compose.yml
 ├── .env.example
-├── CHANGES.md
-├── STATUS.md
 └── README.md
 ```
 
@@ -820,8 +818,6 @@ pytest
 ```
 
 The repository currently contains the backend test suite and is designed to use deterministic mock inference during tests so that tests do not depend on large model downloads or non-deterministic ML output.
-
-For the latest repository-specific verification details, see [`STATUS.md`](STATUS.md).
 
 ---
 

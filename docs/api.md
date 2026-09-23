@@ -34,22 +34,35 @@ raises unexpectedly.
 
 ## `POST /plate/detect`
 
-Multipart form field: `image`.
+Multipart form field: `image`. Now runs OCR on the crop in the same call —
+one upload instead of two.
 
 ```json
 {
   "plate_found": true,
   "box": {"x1": 80, "y1": 210, "x2": 240, "y2": 250},
   "cropped_image_base64": "…",
+  "registration_number": "TN38AB1234",
+  "ocr_confidence": 0.94,
+  "ocr_available": true,
   "mode": "mock",
-  "message": "License plate located."
+  "message": "License plate located. Registration number extracted. Please verify it's correct."
 }
 ```
 
-## `POST /plate/ocr`
+If no OCR engine is installed, or OCR can't read the plate clearly:
+`ocr_available: false` / `registration_number: null` — the client should
+fall back to manual entry either way.
+
+## `POST /plate/ocr` (optional — standalone re-OCR)
 
 Multipart form field: `image` (full frame or a pre-cropped plate — the
-endpoint runs plate detection internally if needed).
+endpoint runs plate detection internally if needed). Kept only for
+re-running OCR on a plate crop you already have (e.g. the user manually
+retook just the plate region); the normal flow no longer needs this
+separate call since `/plate/detect` above already includes it. Safe to
+delete — route, schema, and its two tests in `test_ocr.py` — if your
+client only ever calls `/plate/detect`.
 
 ```json
 {
@@ -60,9 +73,6 @@ endpoint runs plate detection internally if needed).
   "message": "Registration number extracted. Please verify it's correct."
 }
 ```
-
-If no OCR engine is installed: `ocr_available: false`,
-`registration_number: null` — the client should fall back to manual entry.
 
 ## `POST /report/generate`
 
