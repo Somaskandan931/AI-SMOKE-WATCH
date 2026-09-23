@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import '../../core/services/api_service.dart';
@@ -23,6 +24,8 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
   final TextEditingController _controller = TextEditingController();
 
   File? _plateImage;
+  Uint8List? _plateCrop;
+  bool _plateFound = true;
   bool _loading = false;
   LicensePlate? _plate;
   String? _error;
@@ -31,6 +34,35 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
   void initState() {
     super.initState();
     _controller.addListener(() => setState(() {}));
+    // The vehicle photo already contains the plate: locate and read it
+    // automatically. The user can still retake a close-up or type it in.
+    final vehicle = widget.report.vehicleImage;
+    if (vehicle != null) {
+      _loading = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _autoScan(vehicle));
+    }
+  }
+
+  Future<void> _autoScan(File vehicle) async {
+    try {
+      final scan = await _api.scanPlate(vehicle);
+      if (!mounted) return;
+      setState(() {
+        _plateImage = vehicle;
+        _plateCrop = scan.cropBytes;
+        _plateFound = scan.plateFound;
+        _plate = scan.plate;
+        _controller.text = scan.plate.registrationNumber;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _plateImage = vehicle;
+        _error = e.toString();
+      });
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -44,6 +76,8 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
     if (file == null) return;
     setState(() {
       _plateImage = file;
+      _plateCrop = null;
+      _plateFound = true;
       _plate = null;
       _error = null;
     });
@@ -79,7 +113,7 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Capture Plate')),
+      appBar: AppBar(title: const Text('License Plate')),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -91,7 +125,9 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
                 clipBehavior: Clip.antiAlias,
                 child: _plateImage == null
                     ? const Center(child: Icon(Icons.pin, size: 80, color: Colors.black26))
-                    : Image.file(_plateImage!, fit: BoxFit.cover),
+                    : (_plateCrop != null
+                        ? Image.memory(_plateCrop!, fit: BoxFit.contain)
+                        : Image.file(_plateImage!, fit: BoxFit.cover)),
               ),
             ),
             const SizedBox(height: 16),
@@ -108,19 +144,27 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
                 Expanded(
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.camera_alt),
-                    label: const Text('Capture Plate'),
+                    label: const Text('Plate Close-up'),
                     onPressed: () => _capture(true),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            if (_loading) const LoadingIndicator(label: 'Reading registration number…'),
+            if (_loading) const LoadingIndicator(label: 'Detecting license plate…'),
             if (!_loading && _plateImage != null) ...[
               if (_error != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(_error!, style: const TextStyle(color: AppColors.danger)),
+                )
+              else if (!_plateFound)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    'Could not locate the license plate in your photo. Take a close-up of the plate, or type the registration below.',
+                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  ),
                 )
               else if (_plate != null && !_plate!.ocrAvailable)
                 const Padding(
@@ -147,6 +191,14 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
                   suffixIcon: Icon(Icons.edit),
                 ),
               ),
+              if (_plate != null && _plate!.registrationNumber.isNotEmpty)
+                const Padding(
+                  padding: EdgeInsets.only(top: 6),
+                  child: Text(
+                    'Read automatically from your photo — please verify before continuing.',
+                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  ),
+                ),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,

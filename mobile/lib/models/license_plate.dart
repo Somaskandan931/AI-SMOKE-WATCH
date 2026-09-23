@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class LicensePlate {
   /// User-visible / user-editable registration number. Starts as whatever
   /// OCR returned (may be null if OCR failed or is unavailable -- FR-10).
@@ -25,4 +27,13 @@ class LicensePlate {
         ocrAvailable: ocrAvailable,
         wasManuallyEdited: true,
       );
+}
+
+/// Result of automatically locating + reading the plate from the vehicle photo.
+class PlateScan {
+  final LicensePlate plate;
+  final Uint8List? cropBytes; // cropped plate region, if the backend found one
+  final bool plateFound;
+
+  PlateScan({required this.plate, this.cropBytes, required this.plateFound});
 }

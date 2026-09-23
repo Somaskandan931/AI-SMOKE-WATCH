@@ -4,12 +4,13 @@ Report generation (PRD section 10 / FR-13).
 Hard rule from the PRD (section 14.11): the report must describe a
 *suspected* issue and must never claim a confirmed legal emission violation.
 """
+import os
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 
 from app import config
 
-AUTHORITY_HANDLE = config.CIVIC_AUTHORITY_HANDLE
+AUTHORITY_HANDLE = os.getenv("AUTHORITY_HANDLE") or config.CIVIC_AUTHORITY_HANDLE
 IST = timezone(timedelta(hours=5, minutes=30))
 MAX_LOCATION_CHARS = 60  # keeps the post under X's 280-char limit
 

@@ -6,7 +6,16 @@ import numpy as np
 from fastapi import UploadFile
 
 
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp"}
+# Mobile clients often send picked/camera files as application/octet-stream
+# (no file extension to infer a type from). The real check is cv2.imdecode
+# below, so garbage bytes are still rejected with a 422.
+ALLOWED_CONTENT_TYPES = {
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "application/octet-stream",
+}
 MAX_IMAGE_BYTES = 15 * 1024 * 1024  # 15 MB
 
 
