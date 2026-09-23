@@ -14,6 +14,12 @@ SmokeWatch is a Flutter + FastAPI application that helps a user document a vehic
 
 The system does **not** claim to measure emissions or establish a legal violation. It detects visible smoke in an image and produces evidence for human/authority review.
 
+> **Repository note:** The README documents a completed model training run and
+> its local evaluation artifacts, but the reduced repository intentionally
+> excludes the original dataset and large trained checkpoints. The paths under
+> `ai/runs/detect/` refer to the original local run unless those artifacts are
+> copied into the repository.
+
 ---
 
 ## Why this project exists
@@ -313,16 +319,21 @@ The same requirement is enforced again by the report API, providing a second ser
 
 SmokeWatch supports three detection tiers.
 
-## Tier 1 — Unified model
+## Tier 1 — Unified project-specific model
 
-If either of these files exists:
+If a trained unified checkpoint is available at:
 
 ```text
 ai/weights/best.pt
+```
+
+or:
+
+```text
 ai/weights/last.pt
 ```
 
-the backend attempts to load a single unified YOLO model first.
+the backend can use it as the highest-priority YOLO detector.
 
 Expected classes:
 
@@ -331,36 +342,116 @@ vehicle
 exhaust_smoke
 ```
 
-This is the architecture intended for a properly trained project-specific model.
+The training configuration is:
 
-### Training run on record
+```text
+ai/configs/smoke.yaml
+```
 
-A `train.py` run has actually been completed against `ai/configs/smoke.yaml` (see [`ai/weights/README.md`](ai/weights/README.md) for the exact tier-priority logic). Ultralytics wrote its usual run artifacts to `ai/runs/detect/train/` and a separate validation pass to `ai/runs/detect/val/`:
+with:
+
+```yaml
+names:
+  0: vehicle
+  1: exhaust_smoke
+```
+
+### Training run recorded for this project
+
+A project-specific Ultralytics training run was completed and produced the standard run artifacts under:
 
 ```text
 ai/runs/detect/train/
-├── weights/                     # best.pt / last.pt for this run
-├── args.yaml                    # exact hyperparameters used
-├── results.csv                  # per-epoch loss/precision/recall/mAP
-├── results.png                  # results.csv plotted across all epochs
-├── confusion_matrix.png
-├── confusion_matrix_normalized.png
-├── BoxP_curve.png / BoxR_curve.png / BoxF1_curve.png / BoxPR_curve.png
-├── labels.jpg                   # dataset label distribution
-├── train_batch*.jpg             # sample training batches with GT boxes
-└── val_batch*_labels.jpg / val_batch*_pred.jpg   # GT vs. prediction, per batch
-
-ai/runs/detect/val/               # standalone validate.py pass over the same weights
-├── BoxP_curve.png / BoxR_curve.png / BoxF1_curve.png / BoxPR_curve.png
-├── confusion_matrix.png / confusion_matrix_normalized.png
-└── val_batch*_labels.jpg / val_batch*_pred.jpg
 ```
 
-**`ai/weights/best.pt` and the raw dataset under `ai/dataset/` are intentionally not committed to this repository** — the trained checkpoint and image data made the repo too large to keep in version control. `ai/runs/` is kept because the plots and `results.csv` are small and are the actual evidence of what this run measured; regenerate the weights by re-running `train.py` against a re-downloaded dataset (see "Training a project-specific model" below) if you need `best.pt` back locally. Read the numbers in `results.csv` / `results.png` yourself before quoting a precision, recall, or mAP figure anywhere — none are asserted in this README.
+A separate validation pass produced:
 
-## Tier 2 — Current shipped two-model setup
+```text
+ai/runs/detect/val/
+```
 
-If a unified model is unavailable, the backend automatically looks for:
+The original local Windows artifact locations are:
+
+```text
+D:\PycharmProjects\AI_Smoke_Watch\ai\runs\detect\train\
+D:\PycharmProjects\AI_Smoke_Watch\ai\runs\detect\val\
+```
+
+The most important evaluation artifacts are:
+
+| Artifact | Purpose |
+|---|---|
+| `ai/runs/detect/train/args.yaml` | Exact training configuration and hyperparameters recorded by Ultralytics |
+| `ai/runs/detect/train/results.csv` | Per-epoch training/validation losses and detection metrics |
+| `ai/runs/detect/train/results.png` | Training history plotted from `results.csv` |
+| `ai/runs/detect/train/confusion_matrix.png` | Raw validation confusion matrix |
+| `ai/runs/detect/train/confusion_matrix_normalized.png` | Normalized confusion matrix |
+| `ai/runs/detect/train/BoxP_curve.png` | Precision curve |
+| `ai/runs/detect/train/BoxR_curve.png` | Recall curve |
+| `ai/runs/detect/train/BoxF1_curve.png` | F1-score curve |
+| `ai/runs/detect/train/BoxPR_curve.png` | Precision-recall curve |
+| `ai/runs/detect/train/labels.jpg` | Dataset label-distribution visualization |
+| `ai/runs/detect/train/val_batch0_pred.jpg` | Example validation predictions |
+| `ai/runs/detect/train/val_batch1_pred.jpg` | Example validation predictions |
+| `ai/runs/detect/train/val_batch2_pred.jpg` | Example validation predictions |
+| `ai/runs/detect/train/val_batch0_labels.jpg` | Ground-truth validation labels |
+| `ai/runs/detect/train/val_batch1_labels.jpg` | Ground-truth validation labels |
+| `ai/runs/detect/train/val_batch2_labels.jpg` | Ground-truth validation labels |
+| `ai/runs/detect/train/train_batch0.jpg` | Training-batch visualization |
+| `ai/runs/detect/train/train_batch1.jpg` | Training-batch visualization |
+| `ai/runs/detect/train/train_batch2.jpg` | Training-batch visualization |
+| `ai/runs/detect/val/confusion_matrix.png` | Standalone validation confusion matrix |
+| `ai/runs/detect/val/confusion_matrix_normalized.png` | Standalone normalized confusion matrix |
+| `ai/runs/detect/val/BoxP_curve.png` | Standalone validation precision curve |
+| `ai/runs/detect/val/BoxR_curve.png` | Standalone validation recall curve |
+| `ai/runs/detect/val/BoxF1_curve.png` | Standalone validation F1 curve |
+| `ai/runs/detect/val/BoxPR_curve.png` | Standalone validation PR curve |
+| `ai/runs/detect/val/val_batch0_pred.jpg` | Standalone validation predictions |
+| `ai/runs/detect/val/val_batch1_pred.jpg` | Standalone validation predictions |
+| `ai/runs/detect/val/val_batch2_pred.jpg` | Standalone validation predictions |
+
+The `weights/` directory from that training run contains the trained checkpoints (`best.pt` / `last.pt`) when the run is retained locally. Those large checkpoint files are intentionally **not included in the reduced repository**.
+
+Likewise, the training dataset is intentionally **not included**. The repository retains the training configuration and evaluation evidence, while the image dataset and large trained checkpoints can be restored/recreated when needed.
+
+> **Important:** the plots and `results.csv` are evidence from a specific training/validation run. Read the recorded metrics before quoting precision, recall, mAP, or other performance numbers. Do not infer model quality from a single prediction image.
+
+### Run-artifact interpretation
+
+The artifacts answer different questions:
+
+```text
+args.yaml
+   ↓
+"What configuration produced this run?"
+
+results.csv / results.png
+   ↓
+"How did training and validation metrics change over epochs?"
+
+confusion_matrix*.png
+   ↓
+"Which classes were confused with each other?"
+
+BoxP / BoxR / BoxF1 / BoxPR
+   ↓
+"How do precision, recall, F1 and precision-recall behavior change
+ across confidence thresholds?"
+
+val_batch*_labels.jpg
+   ↓
+"What was actually annotated in the validation examples?"
+
+val_batch*_pred.jpg
+   ↓
+"What did the trained detector predict on those examples?"
+```
+
+These artifacts should be considered together when discussing the trained model.
+
+## Tier 2 — Two-model setup
+
+The backend supports a two-model configuration using:
 
 ```text
 ai/weights/vehicle_yolov8n.pt
@@ -370,7 +461,9 @@ ai/weights/smoke_yolov8s.pt
 These are separate real YOLO models:
 
 - **Vehicle:** stock Ultralytics YOLOv8n trained on COCO; `car`, `truck`, `bus`, and `motorcycle` are mapped to the application's `vehicle` label.
-- **Smoke:** a community YOLOv8s model trained on general fire/smoke imagery. It is **not exhaust-pipe-specific**, so its output should be treated as real inference but not as a validated exhaust-emission benchmark.
+- **Smoke:** a community YOLOv8s model trained on general fire/smoke imagery. It is **not exhaust-pipe-specific**, so its output should be treated as a domain-transfer baseline rather than a validated exhaust-emission benchmark.
+
+**Repository note:** these weight files are intentionally absent from the supplied reduced ZIP. `ai/weights/` currently contains the model-tier documentation only. Restore the required weights locally if you want to run the real two-model tier.
 
 ## Tier 3 — Mock fallback
 
@@ -568,25 +661,24 @@ The user cannot bypass the smoke verification step and jump directly into the re
 
 # Project structure
 
+The project is organized into four main areas: AI/training, FastAPI backend,
+Flutter mobile, and supporting documentation/infrastructure.
+
 ```text
 .
 ├── ai/
 │   ├── configs/
 │   │   ├── smoke.yaml
 │   │   └── smoke_only.yaml
-│   ├── dataset/
-│   │   ├── raw/
-│   │   ├── processed/
-│   │   └── download_from_roboflow.py
+│   ├── notebooks/
 │   ├── training/
 │   │   ├── train.py
 │   │   ├── validate.py
-│   │   └── visualize_eval.py
+│   │   ├── evaluate.py
+│   │   ├── visualize_eval.py
+│   │   └── yolov8n.pt              # present in supplied ZIP snapshot
 │   └── weights/
-│       ├── vehicle_yolov8n.pt
-│       ├── smoke_yolov8s.pt
-│       ├── plate_best.pt
-│       └── best.pt              # optional future unified model
+│       └── README.md               # model-tier/provenance documentation
 │
 ├── backend/
 │   ├── app/
@@ -594,11 +686,19 @@ The user cannot bypass the smoke verification step and jump directly into the re
 │   │   │   ├── detection.py
 │   │   │   ├── plate.py
 │   │   │   └── reports.py
+│   │   ├── models/
+│   │   │   ├── plate_detector.py
+│   │   │   └── smoke_detector.py
+│   │   ├── schemas/
+│   │   │   ├── detection_schema.py
+│   │   │   └── report_schema.py
 │   │   ├── services/
 │   │   │   ├── yolo_service.py
 │   │   │   ├── plate_detector.py
 │   │   │   ├── ocr_service.py
-│   │   │   └── report_service.py
+│   │   │   ├── report_service.py
+│   │   │   └── x_client.py
+│   │   ├── utils/
 │   │   ├── config.py
 │   │   └── main.py
 │   ├── tests/
@@ -606,6 +706,7 @@ The user cannot bypass the smoke verification step and jump directly into the re
 │   └── requirements.txt
 │
 ├── database/
+│   ├── migrations/
 │   └── schema.sql
 │
 ├── docs/
@@ -614,13 +715,7 @@ The user cannot bypass the smoke verification step and jump directly into the re
 │   └── demo.md
 │
 ├── mobile/
-│   ├── lib/
-│   │   ├── screens/
-│   │   ├── services/
-│   │   ├── models/
-│   │   └── widgets/
-│   ├── pubspec.yaml
-│   └── NATIVE_SETUP.md
+│   └── android/                    # Android project scaffold in supplied ZIP
 │
 ├── docker-compose.yml
 ├── .env.example
@@ -629,7 +724,30 @@ The user cannot bypass the smoke verification step and jump directly into the re
 └── README.md
 ```
 
----
+### Reduced-repository note
+
+The supplied ZIP intentionally omits the large dataset and the trained
+`ai/weights/*.pt` checkpoints. It also contains only the Android portion of
+the Flutter project in the supplied snapshot; the Flutter `lib/` source and
+`pubspec.yaml` are not present in this ZIP snapshot.
+
+If your Git working tree contains the Flutter source separately, the intended
+mobile layout is:
+
+```text
+mobile/
+├── lib/
+│   ├── screens/
+│   ├── services/
+│   ├── models/
+│   ├── widgets/
+│   └── core/
+├── pubspec.yaml
+└── android/
+```
+
+This README therefore documents the application architecture while explicitly
+avoiding the claim that omitted files are present in the reduced archive.
 
 # Quick start
 
@@ -747,7 +865,7 @@ flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8000/api
 
 The phone and development machine must be able to reach each other over the network.
 
-See [`mobile/NATIVE_SETUP.md`](mobile/NATIVE_SETUP.md) for native camera/location permission setup.
+For Android native configuration, use the files under `mobile/android/` and verify camera/location permissions before running on a device.
 
 ---
 
@@ -807,15 +925,9 @@ Set:
 ROBOFLOW_API_KEY=your_key_here
 ```
 
-Then:
-
-```bash
-cd ai
-pip install -r requirements.txt
-
-cd dataset
-python download_from_roboflow.py --sources sources.yaml
-```
+The reduced repository does not include `ai/dataset/`. To retrain, restore or
+recreate the dataset export and the dataset-download helper before running the
+training pipeline.
 
 ## Train
 
@@ -872,7 +984,8 @@ python visualize_eval.py \
   --data ../configs/smoke.yaml
 ```
 
-Expected output includes:
+The visualization script can generate a structured evaluation directory such
+as:
 
 ```text
 ai/training/results/
@@ -885,6 +998,9 @@ ai/training/results/
 ├── R_curve.png
 └── per_class_metrics.png
 ```
+
+The completed run documented in this README used Ultralytics' standard
+`ai/runs/detect/train/` and `ai/runs/detect/val/` layout instead.
 
 Do not describe a model as "accurate" from a single demo image. Use the validation-set metrics and clearly state the dataset and evaluation conditions.
 
@@ -943,6 +1059,234 @@ vehicle
 ```
 
 ---
+
+# Model results and project visuals
+
+SmokeWatch includes visual evidence from the completed YOLO training and
+validation run. The recommended approach is to keep the important result
+images inside the repository so GitHub renders them directly in this README.
+
+## System architecture
+
+![SmokeWatch system architecture and decision flow](./System_architecture.png)
+
+The architecture diagram shows the complete application flow from image capture
+through AI detection, spatial association, plate verification, location capture,
+report generation, and user confirmation.
+
+## Product / workflow comparison
+
+![Existing manual-reporting flow vs. SmokeWatch's AI-gated flow](./comparison.png)
+
+This diagram illustrates the distinction between a conventional manual
+reporting workflow and SmokeWatch's AI-gated workflow.
+
+---
+
+# Model training results
+
+The following images come from the completed Ultralytics training run.
+
+> **Important:** These are evaluation artifacts from a specific training run.
+> They should be interpreted together with `results.csv`, `args.yaml`, the
+> confusion matrices, and the validation prediction images. The README does
+> not claim a particular accuracy, precision, recall, or mAP value without
+> reading the recorded metrics.
+
+## Training history
+
+### Results across epochs
+
+![YOLO training results](./ai/runs/detect/train/results.png)
+
+This plot summarizes the loss and detection metrics recorded during training
+and validation.
+
+### Dataset label distribution
+
+![Dataset labels](./ai/runs/detect/train/labels.jpg)
+
+The label visualization shows the distribution and geometry of the annotations
+used by the training run.
+
+---
+
+# Detection performance
+
+## Precision curve
+
+![Precision curve](./ai/runs/detect/train/BoxP_curve.png)
+
+## Recall curve
+
+![Recall curve](./ai/runs/detect/train/BoxR_curve.png)
+
+## F1 curve
+
+![F1 curve](./ai/runs/detect/train/BoxF1_curve.png)
+
+## Precision-Recall curve
+
+![Precision-Recall curve](./ai/runs/detect/train/BoxPR_curve.png)
+
+These curves show how detection behavior changes with the confidence
+threshold.
+
+---
+
+# Confusion matrices
+
+## Confusion matrix
+
+![Confusion matrix](./ai/runs/detect/train/confusion_matrix.png)
+
+## Normalized confusion matrix
+
+![Normalized confusion matrix](./ai/runs/detect/train/confusion_matrix_normalized.png)
+
+The confusion matrices provide a class-level view of correct and incorrect
+predictions on the validation data.
+
+---
+
+# Validation predictions
+
+The validation prediction images are especially useful because they allow a
+reader to visually compare the model's predictions against the validation
+examples.
+
+## Validation batch 0
+
+### Ground truth
+
+![Validation batch 0 ground truth](./ai/runs/detect/train/val_batch0_labels.jpg)
+
+### Predictions
+
+![Validation batch 0 predictions](./ai/runs/detect/train/val_batch0_pred.jpg)
+
+## Validation batch 1
+
+### Ground truth
+
+![Validation batch 1 ground truth](./ai/runs/detect/train/val_batch1_labels.jpg)
+
+### Predictions
+
+![Validation batch 1 predictions](./ai/runs/detect/train/val_batch1_pred.jpg)
+
+## Validation batch 2
+
+### Ground truth
+
+![Validation batch 2 ground truth](./ai/runs/detect/train/val_batch2_labels.jpg)
+
+### Predictions
+
+![Validation batch 2 predictions](./ai/runs/detect/train/val_batch2_pred.jpg)
+
+---
+
+# Standalone validation results
+
+A separate validation run was also recorded under:
+
+```text
+ai/runs/detect/val/
+```
+
+### Validation precision
+
+![Validation precision curve](./ai/runs/detect/val/BoxP_curve.png)
+
+### Validation recall
+
+![Validation recall curve](./ai/runs/detect/val/BoxR_curve.png)
+
+### Validation F1
+
+![Validation F1 curve](./ai/runs/detect/val/BoxF1_curve.png)
+
+### Validation precision-recall
+
+![Validation PR curve](./ai/runs/detect/val/BoxPR_curve.png)
+
+### Validation confusion matrix
+
+![Validation confusion matrix](./ai/runs/detect/val/confusion_matrix.png)
+
+### Normalized validation confusion matrix
+
+![Normalized validation confusion matrix](./ai/runs/detect/val/confusion_matrix_normalized.png)
+
+### Validation batch 0 predictions
+
+![Validation batch 0 predictions](./ai/runs/detect/val/val_batch0_pred.jpg)
+
+### Validation batch 1 predictions
+
+![Validation batch 1 predictions](./ai/runs/detect/val/val_batch1_pred.jpg)
+
+### Validation batch 2 predictions
+
+![Validation batch 2 predictions](./ai/runs/detect/val/val_batch2_pred.jpg)
+
+---
+
+# Keeping the repository size manageable
+
+The original dataset and trained model checkpoints were removed from the
+repository because of their size.
+
+The **result images are much smaller and are useful documentation**, so they
+can be retained in Git without committing the dataset or `.pt` checkpoints.
+
+For GitHub to render the images above, the corresponding files must exist at
+these repository-relative paths:
+
+```text
+System_architecture.png
+comparison.png
+
+ai/runs/detect/train/
+├── results.png
+├── labels.jpg
+├── BoxP_curve.png
+├── BoxR_curve.png
+├── BoxF1_curve.png
+├── BoxPR_curve.png
+├── confusion_matrix.png
+├── confusion_matrix_normalized.png
+├── val_batch0_labels.jpg
+├── val_batch0_pred.jpg
+├── val_batch1_labels.jpg
+├── val_batch1_pred.jpg
+├── val_batch2_labels.jpg
+└── val_batch2_pred.jpg
+
+ai/runs/detect/val/
+├── BoxP_curve.png
+├── BoxR_curve.png
+├── BoxF1_curve.png
+├── BoxPR_curve.png
+├── confusion_matrix.png
+├── confusion_matrix_normalized.png
+├── val_batch0_pred.jpg
+├── val_batch1_pred.jpg
+└── val_batch2_pred.jpg
+```
+
+Your original local files are currently under:
+
+```text
+D:\PycharmProjects\AI_Smoke_Watch\ai\runs\detect\train\
+D:\PycharmProjects\AI_Smoke_Watch\ai\runs\detect\val\
+```
+
+So **do not put those `D:\...` paths into the Markdown image links**. GitHub
+cannot use your local Windows filesystem path. Copy the result files into the
+repository while preserving the `ai/runs/detect/...` structure, then commit
+them.
 
 # Screenshots
 
@@ -1016,23 +1360,100 @@ The user sees the final content before it is handed to the X composer. The backe
 | Component | State |
 |---|---|
 | FastAPI backend | Implemented |
-| Vehicle detection | Real YOLO model + fallback |
-| Smoke detection | Real YOLO model + fallback |
+| Vehicle detection pipeline | Implemented with unified/two-model/mock tiers |
+| Smoke detection pipeline | Implemented with unified/two-model/mock tiers |
 | Vehicle/smoke spatial association | Implemented |
-| Reporting gate | Implemented |
-| Plate detection | Real YOLO model + fallback |
-| OCR | EasyOCR / PaddleOCR / manual fallback |
+| Confidence/reporting gate | Implemented |
+| License plate detection | Implemented with model + fallback |
+| OCR | Implemented with OCR engines/manual fallback |
 | Report generation | Implemented |
 | X share intent | Implemented |
-| Flutter workflow | Code-complete; requires local Flutter build/run verification |
-| Unified project-specific YOLO | One training run completed (`ai/runs/detect/train/`, `.../val/`); `best.pt` and the dataset are not committed to the repo |
+| AI training scripts | Present |
+| AI validation/evaluation scripts | Present |
+| Recorded training run | Present as external/local run artifacts |
+| Training dataset | Intentionally removed from reduced repository |
+| Unified trained checkpoint | Intentionally removed from reduced repository |
+| Two-model weight files | Intentionally removed from reduced repository |
+| `ai/training/yolov8n.pt` | Present in supplied ZIP snapshot |
 | PostgreSQL | Schema provided; not currently wired into API |
 | Docker | Configuration provided |
 | Automated backend tests | Included |
+| Flutter mobile source | Not present in supplied ZIP snapshot |
+| Android scaffold | Present in supplied ZIP snapshot |
+| Architecture documentation | Present |
+| API documentation | Present |
+| Demo documentation | Present |
 
-See [`STATUS.md`](STATUS.md) and [`CHANGES.md`](CHANGES.md) for repository-specific verification and recent fixes.
+See [`STATUS.md`](STATUS.md) and [`CHANGES.md`](CHANGES.md) for repository-specific
+verification history and implementation changes.
 
----
+### Repository-size decision
+
+The dataset and trained checkpoints were removed to keep the repository small.
+That is appropriate for a source-code repository, but it means a fresh clone
+cannot reproduce real model inference until the required model files and
+dataset are restored locally.
+
+The recorded training/evaluation plots remain valuable because they document
+what the completed run produced without requiring the large image dataset or
+checkpoint to be committed.
+
+# Repository assets and reproducibility
+
+To keep the repository manageable, SmokeWatch separates source code from
+large ML assets.
+
+### Included
+
+- AI configuration files in `ai/configs/`
+- Training, validation, evaluation and visualization scripts in `ai/training/`
+- Backend source and tests
+- Database schema and migrations
+- Docker configuration
+- Product/API/architecture documentation
+- Training-run plots and metrics **when copied into the repository**
+- `ai/training/yolov8n.pt` in the supplied ZIP snapshot
+
+### Intentionally excluded
+
+```text
+ai/dataset/
+ai/weights/best.pt
+ai/weights/last.pt
+ai/weights/vehicle_yolov8n.pt
+ai/weights/smoke_yolov8s.pt
+ai/weights/plate_best.pt
+```
+
+The exact files available in a local checkout may differ if you restore model
+assets outside Git.
+
+### Reproducing the recorded run
+
+The run can be interpreted from:
+
+```text
+ai/runs/detect/train/args.yaml
+ai/runs/detect/train/results.csv
+ai/runs/detect/train/results.png
+ai/runs/detect/train/confusion_matrix.png
+ai/runs/detect/train/confusion_matrix_normalized.png
+ai/runs/detect/train/BoxP_curve.png
+ai/runs/detect/train/BoxR_curve.png
+ai/runs/detect/train/BoxF1_curve.png
+ai/runs/detect/train/BoxPR_curve.png
+```
+
+The original dataset and trained checkpoint are required to reproduce the run
+from scratch. They are not part of the reduced repository.
+
+### No separate PRD file in the supplied archive
+
+The supplied ZIP does not contain a file named `PRD.md`, `prd.md`, or another
+standalone product-requirements document. The application requirements are
+instead reflected across the implementation, `docs/architecture.md`,
+`docs/api.md`, `docs/demo.md`, `STATUS.md`, and the product/workflow sections
+of this README.
 
 # Known limitations
 
@@ -1091,7 +1512,7 @@ The mobile code needs to be built and exercised in a Flutter environment with th
 - [`docs/architecture.md`](docs/architecture.md) — system architecture and data flow
 - [`docs/api.md`](docs/api.md) — API reference
 - [`docs/demo.md`](docs/demo.md) — end-to-end demo procedure
-- [`mobile/NATIVE_SETUP.md`](mobile/NATIVE_SETUP.md) — Flutter native setup
+- `mobile/android/` — Android native project configuration in the supplied archive
 - [`ai/weights/README.md`](ai/weights/README.md) — model provenance and weight tiers
 
 ---
