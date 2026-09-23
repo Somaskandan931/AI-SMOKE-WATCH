@@ -1,0 +1,11 @@
+# Ultralytics YOLO dataset config for the smoke-only fine-tune.
+# Used with sources_smoke_only.yaml -- see that file for why this exists
+# instead of the 2-class vehicle+exhaust_smoke config.yaml.
+
+path: ../dataset/processed_smoke_only
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: smoke

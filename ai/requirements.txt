@@ -1,0 +1,12 @@
+# Training-only dependencies — NOT part of the backend's base install
+# (backend/requirements.txt already pins ultralytics for inference; this
+# file adds the roboflow SDK, needed only to pull a dataset for training,
+# not to run the app).
+#
+#   pip install -r ai/requirements.txt --break-system-packages
+
+ultralytics==8.4.158
+roboflow==1.1.50
+pyyaml>=6.0  # used by download_from_roboflow.py's --sources multi-dataset merge mode
+python-dotenv>=1.0.0  # download_from_roboflow.py loads ROBOFLOW_API_KEY from a root-level .env
+matplotlib>=3.8.0  # visualize_eval.py's per-class metrics bar chart

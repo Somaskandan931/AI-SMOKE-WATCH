@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      # No weights-path overrides needed: config.py auto-detects
+      # ai/weights/best.pt (once trained) or the shipped
+      # vehicle_yolov8n.pt + smoke_yolov8s.pt + plate_best.pt.
+      # (Previously this set PLATE_WEIGHTS_PATH to a "plate.pt" that
+      # never existed, which silently overrode the correct auto-detected
+      # plate_best.pt and forced plate detection into mock mode.)
+      - SMOKE_CONFIDENCE_THRESHOLD=0.5
+      - VEHICLE_CONFIDENCE_THRESHOLD=0.5
+      - AUTHORITY_HANDLE=@ChennaiTrafficP
+    volumes:
+      - ./ai/weights:/app/ai/weights:ro
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=smoke_reports
+      - POSTGRES_USER=smoke_app
+      - POSTGRES_PASSWORD=change_me
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+volumes:
+  db_data:

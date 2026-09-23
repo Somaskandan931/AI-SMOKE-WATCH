@@ -1,0 +1,62 @@
+# Smoke-only fine-tune sources (see CHANGES.md / STATUS.md for why).
+#
+# WHY THIS FILE EXISTS
+# ---------------------
+# Verified via the actual data.yaml dumps: exhaust_v4 is an Indonesian
+# exhaust-PIPE-HARDWARE classifier (5 classes about modified vs standard
+# pipes), not smoke, and has zero usable boxes here -- it is dropped.
+#
+# alpha-ai-nwrrb/smoke-vehicles (see sources.yaml) turned out to have real
+# vehicle boxes too (183), but that's far too few to safely replace the
+# already-working, thousands-of-images stock COCO vehicle detector --
+# using it for a unified 2-class model risks REGRESSING vehicle detection
+# to fix smoke detection. Its 1,117 exhaust_smoke boxes, on the other
+# hand, are a genuine and substantial upgrade with zero downside here --
+# this file pulls in only those, deliberately dropping its 'vehicle'
+# class (class_map below has no entry for it, so those boxes -- and any
+# image left with zero boxes after dropping them -- are skipped, not
+# mis-mapped).
+#
+# That leaves 3 sources with real, verified `smoke` boxes: dungta_data1,
+# dungta_data2 (78 images, 80 boxes) + smoke_vehicles (1,034 images,
+# 1,117 smoke boxes) = ~1,112 images total. All map to canonical `smoke`
+# only, so this fine-tunes ONLY the smoke detector -- it replaces
+# ai/weights/smoke_yolov8s.pt, NOT ai/weights/vehicle_yolov8n.pt. The
+# stock COCO vehicle model stays as-is (see config.py's two-model
+# architecture and its comment on this).
+
+canonical_classes:
+  0: smoke
+
+sources:
+  - name: dungta_data1
+    url: https://universe.roboflow.com/dungta/data1-ocewv
+    workspace: dungta
+    project: data1-ocewv
+    version: 1
+    class_map:
+      smoke: smoke
+
+  - name: dungta_data2
+    url: https://universe.roboflow.com/dungta/data2-hyfq5
+    workspace: dungta
+    project: data2-hyfq5
+    version: 1
+    class_map:
+      smoke: smoke
+
+  - name: smoke_vehicles
+    # Same source as sources.yaml's entry -- reuses the cached download,
+    # no re-download needed. Only its smoke class is pulled in here (see
+    # note above); class '1' (vehicle) is intentionally left unmapped.
+    url: https://universe.roboflow.com/alpha-ai-nwrrb/smoke-vehicles
+    workspace: alpha-ai-nwrrb
+    project: smoke-vehicles
+    version: 3
+    class_map:
+      '0': smoke   # confirmed by visual inspection -- see sources.yaml
+
+# Strongly recommended before training (PRD 14.3: negatives matter most
+# for avoiding false positives on dust/fog/steam/shadows): drop your own
+# vehicle-without-smoke photos into ai/dataset/raw/negatives/ -- picked
+# up automatically via --negatives-dir.

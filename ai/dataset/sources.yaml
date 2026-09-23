@@ -1,0 +1,95 @@
+# Sources for the multi-dataset merge mode of download_from_roboflow.py
+# ( python download_from_roboflow.py --sources sources.yaml )
+#
+# WHY THIS FILE EXISTS
+# ---------------------
+# The two datasets actually sized for this problem in the literature --
+# LaSSoV (75k images, "Cascaded Vehicle Matching..." MDPI 2023) and
+# DB-Net's PoVSSeg (polygon-annotated vehicle smoke, MDPI 2023) -- are both
+# real but NOT freely downloadable: both papers' data-availability
+# statements say "available on request," with no public link and no
+# guaranteed hackathon-timeline response. So instead this merges several
+# small public Roboflow Universe projects that do have open vehicle+smoke
+# annotations, remaps each one's own class names onto this repo's
+# canonical {vehicle, exhaust_smoke} (matching ../configs/smoke.yaml
+# exactly), and combines them into one dataset.
+#
+# VERIFY BEFORE RUNNING
+# ----------------------
+# Roboflow Universe project slugs and version numbers can change, and the
+# sandbox this file was authored in cannot reach roboflow.com to confirm
+# them live (egress there is limited to pypi/npm/github). Before running:
+#   1. Open each `url` below in a browser.
+#   2. Click "Download this Dataset" -> pick "YOLOv8" -> "show download
+#      code". Roboflow prints the exact workspace/project/version to use.
+#   3. Paste those into the fields below if they differ from what's here.
+#   4. Open the project's "Classes" tab and confirm class_map's keys
+#      (the left-hand side) match the source's actual class names --
+#      Roboflow class names are case-sensitive.
+#
+# Each entry with no vehicle-class images of its own (e.g. exhaust_v4,
+# which only labels "exhaust") still contributes real exhaust_smoke boxes
+# on real photos of a vehicle's exhaust pipe -- those images just won't
+# also have a "vehicle" box unless you add one by hand, which is fine:
+# the training script and the reporting-gate's association check both
+# still learn from the smoke box itself.
+
+canonical_classes:
+  0: vehicle
+  1: exhaust_smoke
+
+sources:
+  - name: smoke_vehicles
+    # Replaces the old cars_with_smoke entry -- that slug 404'd (dead
+    # project, confirmed by the "SKIPPED -- download failed" output).
+    # Real project, 1,034 images. Its classes were never named by the
+    # dataset author (data.yaml literally has names: ['0','1']), so the
+    # mapping below was confirmed by VISUALLY inspecting 4 sample images
+    # on the Roboflow browse UI on 2026-09-23: class '0' boxes are drawn
+    # on the smoke plume (3/3 samples), class '1' boxes are drawn on the
+    # vehicle body (1/1 sample, a car with no smoke in frame). Consistent
+    # across all samples checked -- if you add more source images later
+    # and see a contradiction, re-verify before trusting this further.
+    url: https://universe.roboflow.com/alpha-ai-nwrrb/smoke-vehicles
+    workspace: alpha-ai-nwrrb
+    project: smoke-vehicles
+    version: 3
+    class_map:
+      '0': exhaust_smoke   # confirmed: box drawn on smoke plume
+      '1': vehicle          # confirmed: box drawn on car body
+
+  - name: exhaust_v4
+    url: https://universe.roboflow.com/exhaust-detection/exhaust/dataset/4
+    workspace: exhaust-detection
+    project: exhaust
+    version: 4
+    class_map:
+      exhaust: exhaust_smoke
+
+  - name: dungta_data1
+    url: https://universe.roboflow.com/dungta/data1-ocewv
+    workspace: dungta
+    project: data1-ocewv
+    version: 1
+    class_map:
+      car: vehicle
+      smoke: exhaust_smoke
+
+  - name: dungta_data2
+    url: https://universe.roboflow.com/dungta/data2-hyfq5
+    workspace: dungta
+    project: data2-hyfq5
+    version: 1
+    class_map:
+      car: vehicle
+      smoke: exhaust_smoke
+
+# Optional additional negative-only source (PRD 14.3: dust/fog/steam/shadow
+# false-positive resistance matters more than extra positives). Uncomment
+# and verify if you want general smoke-texture negatives folded in too --
+# most frames in general fire/smoke sets are wildfire/indoor, not vehicles,
+# so treat this as a supplement, not a primary source, and expect to drop
+# its "fire" class entirely (no canonical equivalent -> boxes get skipped,
+# images get skipped too since they'd have zero remaining boxes -- see
+# add your own real vehicle negatives via ai/dataset/raw/negatives/ instead,
+# which download_from_roboflow.py's --negatives-dir picks up automatically).

@@ -1,0 +1,19 @@
+# Ultralytics YOLO dataset config for vehicle + exhaust_smoke detection.
+# Point this at your Roboflow export (Roboflow can generate this file for you
+# directly when you export in "YOLOv8" format).
+
+path: ../dataset          # dataset root
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: vehicle
+  1: exhaust_smoke
+
+# Future expansion (PRD 14.2), once enough per-class data exists:
+# 0: car
+# 1: bus
+# 2: truck
+# 3: motorcycle
+# 4: exhaust_smoke

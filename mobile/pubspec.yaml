@@ -1,0 +1,44 @@
+name: smoke_watch
+description: >
+  Detect. Verify. Report. AI-powered vehicle exhaust smoke civic reporting app.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # Camera / gallery
+  image_picker: ^1.1.2
+
+  # Networking
+  http: ^1.2.2
+
+  # Location -- works with NO API key at all
+  geolocator: ^13.0.1
+
+  # Reverse geocoding to a human-readable place/landmark name.
+  # Uses OpenStreetMap Nominatim (free, no key) -- see
+  # core/services/location_service.dart for details and how to swap in the
+  # Google Maps Geocoding API instead if you have a key.
+  url_launcher: ^6.3.1
+
+  # State handling for the multi-step flow
+  provider: ^6.1.2
+
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/

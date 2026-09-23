@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Flutter
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/ios/Pods/
+
+# Model weights: the 3 real, already-fetched weight files this project
+# ships (vehicle_yolov8n.pt, smoke_yolov8s.pt, plate_best.pt) are
+# committed on purpose so the app runs with real inference out of the
+# box -- see ai/weights/README.md for provenance. Only a *newly trained*
+# unified model (best.pt/last.pt from ai/training/train.py) is excluded,
+# since that's reproducible from ai/training/train.py + your dataset and
+# shouldn't bloat the repo on every retrain.
+ai/weights/best.pt
+ai/weights/last.pt
+
+# Downloaded/merged dataset (large, reproducible from sources.yaml -- don't commit)
+ai/dataset/_roboflow_downloads/
+ai/dataset/processed/images/
+ai/dataset/processed/labels/
+!ai/dataset/processed/README.md
+ai/dataset/raw/negatives/*
+!ai/dataset/raw/negatives/README.md
+
+# Env
+.env
+*.log
