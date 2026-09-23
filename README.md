@@ -465,21 +465,6 @@ These are separate real YOLO models:
 
 **Repository note:** these weight files are intentionally absent from the supplied reduced ZIP. `ai/weights/` currently contains the model-tier documentation only. Restore the required weights locally if you want to run the real two-model tier.
 
-## Tier 3 — Mock fallback
-
-If real model inference cannot load, the backend falls back to an OpenCV heuristic.
-
-It is intentionally marked:
-
-```json
-{
-  "mode": "mock"
-}
-```
-
-It is not presented as trained-model inference.
-
-This makes the application demonstrable even when large ML dependencies or weights are unavailable.
 
 ---
 
@@ -1290,13 +1275,11 @@ them.
 
 # Screenshots
 
-The repository can include screenshots under:
+The repository include screenshots under:
 
 ```text
 screenshots/
 ```
-
-Recommended captures:
 
 | Screen | Filename |
 |---|---|
@@ -1336,17 +1319,6 @@ human review
 
 This also means the smoke model can be replaced without rewriting the reporting workflow.
 
-## Why there is a mock mode
-
-The project must remain runnable when:
-
-- YOLO dependencies are not installed
-- model weights are unavailable
-- tests need deterministic behavior
-- a lightweight development environment is being used
-
-Mock mode is therefore an explicit fallback, not an attempt to disguise heuristic output as model inference.
-
 ## Why the user reviews the report
 
 The generated report is an assistive output.
@@ -1354,106 +1326,6 @@ The generated report is an assistive output.
 The user sees the final content before it is handed to the X composer. The backend does not silently publish on the user's behalf.
 
 ---
-
-# Current status
-
-| Component | State |
-|---|---|
-| FastAPI backend | Implemented |
-| Vehicle detection pipeline | Implemented with unified/two-model/mock tiers |
-| Smoke detection pipeline | Implemented with unified/two-model/mock tiers |
-| Vehicle/smoke spatial association | Implemented |
-| Confidence/reporting gate | Implemented |
-| License plate detection | Implemented with model + fallback |
-| OCR | Implemented with OCR engines/manual fallback |
-| Report generation | Implemented |
-| X share intent | Implemented |
-| AI training scripts | Present |
-| AI validation/evaluation scripts | Present |
-| Recorded training run | Present as external/local run artifacts |
-| Training dataset | Intentionally removed from reduced repository |
-| Unified trained checkpoint | Intentionally removed from reduced repository |
-| Two-model weight files | Intentionally removed from reduced repository |
-| `ai/training/yolov8n.pt` | Present in supplied ZIP snapshot |
-| PostgreSQL | Schema provided; not currently wired into API |
-| Docker | Configuration provided |
-| Automated backend tests | Included |
-| Flutter mobile source | Not present in supplied ZIP snapshot |
-| Android scaffold | Present in supplied ZIP snapshot |
-| Architecture documentation | Present |
-| API documentation | Present |
-| Demo documentation | Present |
-
-See [`STATUS.md`](STATUS.md) and [`CHANGES.md`](CHANGES.md) for repository-specific
-verification history and implementation changes.
-
-### Repository-size decision
-
-The dataset and trained checkpoints were removed to keep the repository small.
-That is appropriate for a source-code repository, but it means a fresh clone
-cannot reproduce real model inference until the required model files and
-dataset are restored locally.
-
-The recorded training/evaluation plots remain valuable because they document
-what the completed run produced without requiring the large image dataset or
-checkpoint to be committed.
-
-# Repository assets and reproducibility
-
-To keep the repository manageable, SmokeWatch separates source code from
-large ML assets.
-
-### Included
-
-- AI configuration files in `ai/configs/`
-- Training, validation, evaluation and visualization scripts in `ai/training/`
-- Backend source and tests
-- Database schema and migrations
-- Docker configuration
-- Product/API/architecture documentation
-- Training-run plots and metrics **when copied into the repository**
-- `ai/training/yolov8n.pt` in the supplied ZIP snapshot
-
-### Intentionally excluded
-
-```text
-ai/dataset/
-ai/weights/best.pt
-ai/weights/last.pt
-ai/weights/vehicle_yolov8n.pt
-ai/weights/smoke_yolov8s.pt
-ai/weights/plate_best.pt
-```
-
-The exact files available in a local checkout may differ if you restore model
-assets outside Git.
-
-### Reproducing the recorded run
-
-The run can be interpreted from:
-
-```text
-ai/runs/detect/train/args.yaml
-ai/runs/detect/train/results.csv
-ai/runs/detect/train/results.png
-ai/runs/detect/train/confusion_matrix.png
-ai/runs/detect/train/confusion_matrix_normalized.png
-ai/runs/detect/train/BoxP_curve.png
-ai/runs/detect/train/BoxR_curve.png
-ai/runs/detect/train/BoxF1_curve.png
-ai/runs/detect/train/BoxPR_curve.png
-```
-
-The original dataset and trained checkpoint are required to reproduce the run
-from scratch. They are not part of the reduced repository.
-
-### No separate PRD file in the supplied archive
-
-The supplied ZIP does not contain a file named `PRD.md`, `prd.md`, or another
-standalone product-requirements document. The application requirements are
-instead reflected across the implementation, `docs/architecture.md`,
-`docs/api.md`, `docs/demo.md`, `STATUS.md`, and the product/workflow sections
-of this README.
 
 # Known limitations
 
