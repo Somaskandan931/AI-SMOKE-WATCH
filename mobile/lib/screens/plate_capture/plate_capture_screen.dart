@@ -34,35 +34,30 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
   void initState() {
     super.initState();
     _controller.addListener(() => setState(() {}));
-    // The vehicle photo already contains the plate: locate and read it
-    // automatically. The user can still retake a close-up or type it in.
-    final vehicle = widget.report.vehicleImage;
-    if (vehicle != null) {
-      _loading = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _autoScan(vehicle));
-    }
+    // Plate location + OCR already ran server-side as part of the single
+    // /api/analyze upload back in DetectionScreen -- just read the result
+    // off the report. No network call, no re-upload of the vehicle photo.
+    _applyAnalyzedPlate();
   }
 
-  Future<void> _autoScan(File vehicle) async {
-    try {
-      final scan = await _api.scanPlate(vehicle);
-      if (!mounted) return;
-      setState(() {
-        _plateImage = vehicle;
-        _plateCrop = scan.cropBytes;
-        _plateFound = scan.plateFound;
-        _plate = scan.plate;
-        _controller.text = scan.plate.registrationNumber;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _plateImage = vehicle;
-        _error = e.toString();
-      });
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
+  void _applyAnalyzedPlate() {
+    final vehicle = widget.report.vehicleImage;
+    final result = widget.report.detectionResult;
+    if (vehicle == null || result == null) return;
+
+    final plate = LicensePlate(
+      registrationNumber: result.registrationNumber ?? '',
+      confidence: result.ocrConfidence,
+      ocrAvailable: result.ocrAvailable,
+    );
+
+    setState(() {
+      _plateImage = vehicle;
+      _plateCrop = result.plateCropBytes;
+      _plateFound = result.plateFound;
+      _plate = plate;
+      _controller.text = plate.registrationNumber;
+    });
   }
 
   @override
@@ -73,7 +68,7 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
 
   Future<void> _capture(bool fromCamera) async {
     final file = fromCamera ? await _cameraService.captureFromCamera() : await _cameraService.pickFromGallery();
-    if (file == null) return;
+    if (file == null || !mounted) return;
     setState(() {
       _plateImage = file;
       _plateCrop = null;
@@ -85,17 +80,20 @@ class _PlateCaptureScreenState extends State<PlateCaptureScreen> {
   }
 
   Future<void> _runOcr(File file) async {
+    if (!mounted) return;
     setState(() => _loading = true);
     try {
       final plate = await _api.ocrPlate(file);
+      if (!mounted) return;
       setState(() {
         _plate = plate;
         _controller.text = plate.registrationNumber;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() => _error = e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 

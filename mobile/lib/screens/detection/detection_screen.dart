@@ -35,7 +35,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
     final bytes = await widget.report.vehicleImage!.readAsBytes();
     final image = await decodeImageFromList(Uint8List.fromList(bytes));
     _decodedImage = image;
-    final result = await _api.detect(widget.report.vehicleImage!);
+    // One upload of the vehicle photo gets vehicle+smoke detection *and*
+    // plate location *and* OCR back together -- PlateCaptureScreen reads
+    // the plate fields straight off this same result instead of
+    // re-uploading the photo.
+    final result = await _api.analyze(widget.report.vehicleImage!);
     widget.report.detectionResult = result;
     return result;
   }

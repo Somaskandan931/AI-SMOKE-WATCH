@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import detection, plate, reports
+from app.api import analyze, detection, plate, reports
 from app.services.plate_detector import plate_detector
 from app.services.yolo_service import yolo_service
 
@@ -19,6 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(analyze.router, prefix="/api", tags=["analyze"])
 app.include_router(detection.router, prefix="/api", tags=["detection"])
 app.include_router(plate.router, prefix="/api", tags=["plate"])
 app.include_router(reports.router, prefix="/api", tags=["reports"])

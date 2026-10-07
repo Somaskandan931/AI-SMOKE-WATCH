@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 
@@ -17,9 +16,12 @@ class ApiException implements Exception {
 
 /// Thin wrapper around the FastAPI endpoints:
 ///   GET  /api/health
-///   POST /api/detect
+///   POST /api/analyze      (vehicle+smoke+plate+OCR in one upload -- used
+///                            for the initial vehicle photo)
+///   POST /api/detect       (vehicle+smoke only; kept for standalone use)
 ///   POST /api/plate/detect
-///   POST /api/plate/ocr
+///   POST /api/plate/ocr    (both kept for the plate close-up retake flow,
+///                            which is a genuinely different photo)
 ///   POST /api/report/generate
 class ApiService {
   final String baseUrl;
@@ -34,51 +36,19 @@ class ApiService {
     }
   }
 
+  /// Uploads the vehicle photo once and runs the whole pipeline
+  /// (vehicle+smoke detection, plate location, OCR) server-side in a
+  /// single request. Use this instead of detect() + scanPlate()/ocrPlate()
+  /// for the main capture flow -- the same photo never needs to leave the
+  /// device more than once.
+  Future<DetectionResult> analyze(File image) async {
+    final response = await _postImage('$baseUrl/analyze', image);
+    return DetectionResult.fromAnalyzeJson(jsonDecode(response));
+  }
+
   Future<DetectionResult> detect(File image) async {
     final response = await _postImage('$baseUrl/detect', image);
     return DetectionResult.fromJson(jsonDecode(response));
-  }
-
-  Future<Map<String, dynamic>> detectPlate(File image) async {
-    final response = await _postImage('$baseUrl/plate/detect', image);
-    return jsonDecode(response) as Map<String, dynamic>;
-  }
-
-  /// Locates the plate inside the full vehicle photo and reads it.
-  /// Uses /plate/detect (locate + crop + OCR in one call); if that backend
-  /// version returns no registration for a plate it did find, falls back to
-  /// /plate/ocr on the same photo. When no plate is found, nothing is
-  /// guessed -- the caller asks the user for a close-up or manual entry.
-  Future<PlateScan> scanPlate(File image) async {
-    final json = await detectPlate(image);
-    final found = json['plate_found'] as bool? ?? false;
-
-    Uint8List? crop;
-    final b64 = json['cropped_image_base64'] as String?;
-    if (b64 != null && b64.isNotEmpty) crop = base64Decode(b64);
-
-    if (!found) {
-      return PlateScan(
-        plate: LicensePlate(registrationNumber: '', confidence: 0, ocrAvailable: true),
-        plateFound: false,
-      );
-    }
-
-    final reg = (json['registration_number'] as String?) ?? '';
-    if (reg.isNotEmpty) {
-      return PlateScan(
-        plate: LicensePlate(
-          registrationNumber: reg,
-          confidence: (json['ocr_confidence'] as num?)?.toDouble() ?? 0.0,
-          ocrAvailable: json['ocr_available'] as bool? ?? true,
-        ),
-        cropBytes: crop,
-        plateFound: true,
-      );
-    }
-
-    final plate = await ocrPlate(image);
-    return PlateScan(plate: plate, cropBytes: crop, plateFound: true);
   }
 
   Future<LicensePlate> ocrPlate(File image) async {
