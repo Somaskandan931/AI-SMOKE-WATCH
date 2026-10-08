@@ -1218,7 +1218,7 @@ Four association rules were compared on **16 labelled vehicle–smoke pairs (13 
 | **Padded (deployed: +25% width, +60% height)** | 0.929 | 1.000 | 0.963 | 0.938 |
 | Directional | 1.000 | 0.846 | 0.917 | 0.875 |
 
-![Association overlays (green: vehicle, red: smoke)](./ai/benchmark/results/association_overview.jpg)
+![Association overlays (green: vehicle, red: smoke)](ai\benchmark\results\association_overview.jpg)
 
 *Association overlays for all 12 images (individual files in [`ai/benchmark/results/association_vis/`](ai/benchmark/results/association_vis/)).*
 
