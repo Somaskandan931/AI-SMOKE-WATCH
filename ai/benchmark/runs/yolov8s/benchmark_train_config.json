@@ -1,0 +1,34 @@
+{
+  "model": "yolov8s",
+  "checkpoint": "yolov8s.pt",
+  "train_args": {
+    "data": "D:\\PycharmProjects\\AI_Smoke_Watch\\ai\\benchmark\\data.yaml",
+    "epochs": 50,
+    "imgsz": 640,
+    "batch": 8,
+    "seed": 0,
+    "deterministic": true,
+    "optimizer": "auto",
+    "lr0": 0.01,
+    "weight_decay": 0.0005,
+    "patience": 100,
+    "device": "0",
+    "workers": 4,
+    "project": "D:\\PycharmProjects\\AI_Smoke_Watch\\ai\\benchmark\\runs",
+    "name": "yolov8s",
+    "exist_ok": true,
+    "plots": true,
+    "amp": true
+  },
+  "env": {
+    "python": "3.12.4",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",
+    "cpu_count": 16,
+    "torch": "2.5.1+cu121",
+    "cuda_available": true,
+    "torch_threads": 1,
+    "torchvision": "0.20.1+cu121",
+    "ultralytics": "8.4.158"
+  }
+}

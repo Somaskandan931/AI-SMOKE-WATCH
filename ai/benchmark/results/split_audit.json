@@ -1,0 +1,57 @@
+{
+  "before": {
+    "n_images": 1026,
+    "n_groups": 558,
+    "groups_spanning_multiple_splits": 77,
+    "train": {
+      "images": 733,
+      "images_sharing_a_source_with_another_split": 283
+    },
+    "val": {
+      "images": 194,
+      "images_sharing_a_source_with_another_split": 103
+    },
+    "test": {
+      "images": 99,
+      "images_sharing_a_source_with_another_split": 59
+    }
+  },
+  "after": {
+    "n_images": 1026,
+    "n_groups": 558,
+    "groups_spanning_multiple_splits": 0,
+    "train": {
+      "images": 728,
+      "images_sharing_a_source_with_another_split": 0
+    },
+    "val": {
+      "images": 195,
+      "images_sharing_a_source_with_another_split": 0
+    },
+    "test": {
+      "images": 103,
+      "images_sharing_a_source_with_another_split": 0
+    }
+  },
+  "hash_dist": 5,
+  "seed": 0,
+  "ratios": [
+    0.71,
+    0.19,
+    0.1
+  ],
+  "counts": {
+    "train": {
+      "images": 728,
+      "smoke_instances": 816
+    },
+    "val": {
+      "images": 195,
+      "smoke_instances": 260
+    },
+    "test": {
+      "images": 103,
+      "smoke_instances": 121
+    }
+  }
+}

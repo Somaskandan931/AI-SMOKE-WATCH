@@ -1,0 +1,33 @@
+# Benchmark protocol (documentation; the values are enforced in ai/benchmark/*.py).
+dataset:
+  source: ai/dataset/processed_smoke_only          # original Roboflow export (source-image leakage across splits)
+  used: ai/dataset/processed_smoke_only_grouped    # built by ai/benchmark/prepare_dataset.py, group-aware split
+  classes: {0: smoke}
+common:
+  imgsz: 640
+  seed: 0
+  split_use: {train: fit, val: choose checkpoint + confidence threshold, test: final report only}
+yolo:                                              # YOLOv8n, YOLOv8s, YOLO11n, YOLO11s - identical settings
+  epochs: 50
+  batch: 8
+  optimizer: auto
+  lr0: 0.01
+  weight_decay: 0.0005
+  augmentation: ultralytics default (mosaic on, close_mosaic 10)
+faster_rcnn:                                       # framework-specific deviations are reported in the paper
+  backbone: mobilenet_v3_large_fpn (resnet50_fpn optional on GPU)
+  epochs: 30
+  batch: 4
+  optimizer: SGD(momentum 0.9, wd 5e-4), lr 0.005, multistep decay
+  augmentation: hflip + brightness/contrast (no mosaic)
+evaluation:
+  matching_iou: 0.5            # P / R / F1
+  map: IoU 0.50:0.05:0.95, 101-point interpolation (own evaluator, cross-checked against Ultralytics)
+  prediction_conf_floor: 0.001
+  nms_iou: 0.7
+  thresholds_swept_on_val: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  threshold_rule: max F1 on validation (ties -> higher threshold); frozen before test
+  ci: 95% bootstrap over test images (1000 resamples)
+efficiency:
+  latency: batch 1, in-memory image, includes pre/post-processing + NMS, mean/median/P95
+  report: hardware, threads, torch/ultralytics versions (results/efficiency.json)

@@ -1,0 +1,88 @@
+{
+  "env": {
+    "python": "3.12.4",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",
+    "cpu_count": 16,
+    "torch": "2.5.1+cu121",
+    "cuda_available": true,
+    "torch_threads": 8,
+    "torchvision": "0.20.1+cu121",
+    "ultralytics": "8.4.158",
+    "device": "cuda",
+    "threads_set": null,
+    "protocol": "batch=1, imgsz 640, in-memory BGR image, includes pre/post-processing and NMS"
+  },
+  "models": {
+    "yolov8n": {
+      "display": "YOLOv8n",
+      "params_m": 3.011043,
+      "gflops": 8.1916928,
+      "file_mb": 6.249187,
+      "fp32_weights_mb": 12.044172,
+      "latency_ms": {
+        "mean": 20.450992233000854,
+        "median": 18.716599966865033,
+        "p95": 29.539059998933226,
+        "n": 309
+      },
+      "conf_used": 0.3
+    },
+    "yolov8s": {
+      "display": "YOLOv8s",
+      "params_m": 11.135987,
+      "gflops": 28.642048,
+      "file_mb": 22.518179,
+      "fp32_weights_mb": 44.543948,
+      "latency_ms": {
+        "mean": 27.25179190879302,
+        "median": 27.00810000533238,
+        "p95": 29.750860016793006,
+        "n": 309
+      },
+      "conf_used": 0.2
+    },
+    "yolo11n": {
+      "display": "YOLO11n",
+      "params_m": 2.590035,
+      "gflops": 6.499584,
+      "file_mb": 5.471763,
+      "fp32_weights_mb": 10.36014,
+      "latency_ms": {
+        "mean": 23.907836891890092,
+        "median": 23.29819998703897,
+        "p95": 29.258839983958747,
+        "n": 309
+      },
+      "conf_used": 0.3
+    },
+    "yolo11s": {
+      "display": "YOLO11s",
+      "params_m": 9.428179,
+      "gflops": 21.6664576,
+      "file_mb": 19.176979,
+      "fp32_weights_mb": 37.712716,
+      "latency_ms": {
+        "mean": 26.056391262550292,
+        "median": 25.85110004292801,
+        "p95": 28.67074001114815,
+        "n": 309
+      },
+      "conf_used": 0.2
+    },
+    "frcnn": {
+      "display": "Faster R-CNN (MobileNetV3-FPN)",
+      "params_m": 18.954629,
+      "gflops": null,
+      "file_mb": 76.005786,
+      "fp32_weights_mb": 75.818516,
+      "latency_ms": {
+        "mean": 29.87914045324736,
+        "median": 29.02009995887056,
+        "p95": 36.35880000656469,
+        "n": 309
+      },
+      "conf_used": 0.8
+    }
+  }
+}

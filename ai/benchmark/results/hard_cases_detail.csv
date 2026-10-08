@@ -1,0 +1,51 @@
+model,path,category,has_smoke,max_score,detected
+yolov8n,photos for test/Charcoal Dzire Emitting Exhaust on City Road.png,smoke,1,0.4819,1
+yolov8n,photos for test/heavy_smoke_car_test.png,heavy_smoke,1,0.4744,1
+yolov8n,photos for test/Hyundai Verna Light Smoke Detection.png,light_smoke,1,0.0106,0
+yolov8n,photos for test/Indian Highway Traffic with Truck and MTC Bus.png,multi_vehicle,1,0.5182,1
+yolov8n,photos for test/Misty Chennai Street Traffic.png,fog_mist,0,0.4403,1
+yolov8n,photos for test/Motorcycle Commute Through the City.png,light_smoke,1,0.06,0
+yolov8n,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.5732,1
+yolov8n,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.2999,0
+yolov8n,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.4177,1
+yolov8n,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.026,0
+yolov8s,photos for test/Charcoal Dzire Emitting Exhaust on City Road.png,smoke,1,0.5947,1
+yolov8s,photos for test/heavy_smoke_car_test.png,heavy_smoke,1,0.7758,1
+yolov8s,photos for test/Hyundai Verna Light Smoke Detection.png,light_smoke,1,0.1337,0
+yolov8s,photos for test/Indian Highway Traffic with Truck and MTC Bus.png,multi_vehicle,1,0.4101,1
+yolov8s,photos for test/Misty Chennai Street Traffic.png,fog_mist,0,0.2872,1
+yolov8s,photos for test/Motorcycle Commute Through the City.png,light_smoke,1,0.7119,1
+yolov8s,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.6073,1
+yolov8s,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.2466,1
+yolov8s,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.5229,1
+yolov8s,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.0501,0
+yolo11n,photos for test/Charcoal Dzire Emitting Exhaust on City Road.png,smoke,1,0.4868,1
+yolo11n,photos for test/heavy_smoke_car_test.png,heavy_smoke,1,0.4811,1
+yolo11n,photos for test/Hyundai Verna Light Smoke Detection.png,light_smoke,1,0.0063,0
+yolo11n,photos for test/Indian Highway Traffic with Truck and MTC Bus.png,multi_vehicle,1,0.0677,0
+yolo11n,photos for test/Misty Chennai Street Traffic.png,fog_mist,0,0.0792,0
+yolo11n,photos for test/Motorcycle Commute Through the City.png,light_smoke,1,0.1274,0
+yolo11n,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.2149,0
+yolo11n,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.0243,0
+yolo11n,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.0623,0
+yolo11n,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.0153,0
+yolo11s,photos for test/Charcoal Dzire Emitting Exhaust on City Road.png,smoke,1,0.4173,1
+yolo11s,photos for test/heavy_smoke_car_test.png,heavy_smoke,1,0.711,1
+yolo11s,photos for test/Hyundai Verna Light Smoke Detection.png,light_smoke,1,0.0317,0
+yolo11s,photos for test/Indian Highway Traffic with Truck and MTC Bus.png,multi_vehicle,1,0.3487,1
+yolo11s,photos for test/Misty Chennai Street Traffic.png,fog_mist,0,0.1272,0
+yolo11s,photos for test/Motorcycle Commute Through the City.png,light_smoke,1,0.3422,1
+yolo11s,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.557,1
+yolo11s,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.3939,1
+yolo11s,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.5329,1
+yolo11s,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.0389,0
+frcnn,photos for test/Charcoal Dzire Emitting Exhaust on City Road.png,smoke,1,0.9643,1
+frcnn,photos for test/heavy_smoke_car_test.png,heavy_smoke,1,0.9984,1
+frcnn,photos for test/Hyundai Verna Light Smoke Detection.png,light_smoke,1,0.0261,0
+frcnn,photos for test/Indian Highway Traffic with Truck and MTC Bus.png,multi_vehicle,1,0.6627,0
+frcnn,photos for test/Misty Chennai Street Traffic.png,fog_mist,0,0.6861,0
+frcnn,photos for test/Motorcycle Commute Through the City.png,light_smoke,1,0.3638,0
+frcnn,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.6858,0
+frcnn,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.3906,0
+frcnn,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.6625,0
+frcnn,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.0013,0

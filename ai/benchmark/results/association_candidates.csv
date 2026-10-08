@@ -1,0 +1,17 @@
+image,vehicle_idx,vehicle_class,vehicle_conf,smoke_idx,smoke_conf,iou,centroid,padded,directional,gt_associated
+smoke_vehicles_flip_Pol_131_jpg.rf.73edd59fb5d64a53ee485d192aefc99d.jpg,0,truck,0.55,0,0.829,1,1,1,1,1
+smoke_vehicles_flip_Pol_131_jpg.rf.73edd59fb5d64a53ee485d192aefc99d.jpg,0,truck,0.55,1,0.816,1,1,1,1,1
+smoke_vehicles_flip_Pol_41_jpg.rf.998711a17f63e548227c0dd814af89ce.jpg,0,car,0.631,0,0.975,1,1,1,1,1
+smoke_vehicles_Pol_20_jpg.rf.d807a56a2a1018bd8481f83c8250fb84.jpg,0,truck,0.816,0,0.972,0,1,1,0,1
+smoke_vehicles_Pol_41_jpg.rf.5acad9c8bd5a00833d9bcd3cf4e580ec.jpg,0,car,0.647,0,0.981,1,1,1,1,1
+smoke_vehicles_Vehicle_exhaust--227-_jpg.rf.498443100032af0e1bc8cfd4af984ef0.jpg,0,car,0.79,0,0.999,0,0,0,0,0
+smoke_vehicles_Vehicle_exhaust--33-_jpg.rf.5a2ef6b95b0e93a6e066c356fcead393.jpg,0,motorcycle,0.676,0,0.973,1,1,1,1,1
+smoke_vehicles_Vehicle_exhaust--50-_jpg.rf.adb200121b59531594044a0d852bbe11.jpg,0,motorcycle,0.757,0,1.0,1,1,1,1,1
+smoke_vehicles_Vehicle_exhaust--600-_jpg.rf.c7f9a7f149a8654da47973530d699508.jpg,0,car,0.545,0,0.997,0,0,1,0,1
+smoke_vehicles_Vehicle_exhaust--626-_jpg.rf.8923db2ae5683311b6cf1255ac334f46.jpg,0,truck,0.622,0,1.0,1,1,1,1,1
+smoke_vehicles_Vehicle_exhaust--655-_jpg.rf.dda8b3cf8a091c573164689ba60bfc7f.jpg,0,car,0.737,0,0.993,0,0,0,0,0
+smoke_vehicles_Vehicle_exhaust--655-_jpg.rf.dda8b3cf8a091c573164689ba60bfc7f.jpg,1,car,0.506,0,0.993,1,1,1,1,1
+Charcoal Dzire Emitting Exhaust on City Road.png,0,car,0.847,0,0.964,0,1,1,1,1
+heavy_smoke_car_test.png,0,car,0.822,0,0.998,0,0,1,0,0
+heavy_smoke_car_test.png,1,truck,0.678,0,0.998,1,1,1,1,1
+heavy_smoke_car_test.png,2,car,0.589,0,0.998,1,1,1,1,1

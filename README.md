@@ -1375,6 +1375,16 @@ The mobile code needs to be built and exercised in a Flutter environment with th
 
 ---
 
+# Research benchmark (paper experiments)
+
+`ai/benchmark/` holds a reproducible comparison of YOLOv8n/s, YOLO11n/s and Faster R-CNN for smoke detection:
+leakage-free grouped split, identical training protocol, validation-frozen confidence thresholds, one-shot test
+evaluation with bootstrap CIs, latency/size, hard-case and association evaluation, and auto-generated tables/figures.
+Protocol: [`ai/configs/benchmark.yaml`](ai/configs/benchmark.yaml). Run order: [`ai/benchmark/README.md`](ai/benchmark/README.md).
+Paper skeleton: [`paper/`](paper/). The deployed app is unchanged until a winner is chosen from the benchmark.
+
+---
+
 # Documentation
 
 - [`docs/architecture.md`](docs/architecture.md) — system architecture and data flow
