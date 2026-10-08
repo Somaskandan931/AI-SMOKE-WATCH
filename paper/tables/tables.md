@@ -17,7 +17,7 @@ Original split leakage: 59 of 99 test images shared a source photo with train/va
 | YOLOv8s | 0.2 | 0.588 | 0.744 | 0.657 | 0.707 [0.610, 0.807] | 0.340 [0.281, 0.414] |
 | YOLO11n | 0.3 | 0.740 | 0.636 | 0.684 | 0.720 [0.617, 0.824] | 0.364 [0.300, 0.435] |
 | YOLO11s | 0.2 | 0.680 | 0.702 | 0.691 | 0.738 [0.636, 0.837] | 0.371 [0.311, 0.441] |
-| Faster R-CNN (MobileNetV3-FPN) | 0.8 | 0.819 | 0.711 | 0.761 | 0.767 [0.675, 0.867] | 0.410 [0.347, 0.483] |
+| Faster R-CNN (MobileNetV3-FPN) | 0.9 | 0.810 | 0.669 | 0.733 | 0.751 [0.666, 0.844] | 0.402 [0.342, 0.478] |
 
 ### Table 3. Efficiency (see efficiency.json for hardware/threads)
 
@@ -44,18 +44,18 @@ Pareto-optimal (mAP@50-95 vs mean latency): YOLOv8n, YOLO11s, Faster R-CNN (Mobi
 | YOLOv8s | 6 | 0.833 | 4 | 0.750 |
 | YOLO11n | 6 | 0.333 | 4 | 0.000 |
 | YOLO11s | 6 | 0.833 | 4 | 0.500 |
-| Faster R-CNN (MobileNetV3-FPN) | 6 | 0.333 | 4 | 0.000 |
+| Faster R-CNN (MobileNetV3-FPN) | 6 | 0.500 | 4 | 0.500 |
 
 Images flagged as smoke per category (detected / total):
 
 | Category | YOLOv8n | YOLOv8s | YOLO11n | YOLO11s | Faster R-CNN (MobileNetV3-FPN) |
 |---|---:|---:|---:|---:|---:|
-| fog_mist | 1/1 | 1/1 | 0/1 | 0/1 | 0/1 |
+| fog_mist | 1/1 | 1/1 | 0/1 | 0/1 | 1/1 |
 | heavy_smoke | 1/1 | 1/1 | 1/1 | 1/1 | 1/1 |
-| light_smoke | 0/2 | 1/2 | 0/2 | 1/2 | 0/2 |
+| light_smoke | 0/2 | 1/2 | 0/2 | 1/2 | 1/2 |
 | multi_vehicle | 1/2 | 2/2 | 0/2 | 2/2 | 0/2 |
 | no_smoke | 0/1 | 0/1 | 0/1 | 0/1 | 0/1 |
-| non_vehicle_smoke | 2/2 | 2/2 | 0/2 | 2/2 | 0/2 |
+| non_vehicle_smoke | 2/2 | 2/2 | 0/2 | 2/2 | 1/2 |
 | smoke | 1/1 | 1/1 | 1/1 | 1/1 | 1/1 |
 
 Box-level results per category (images with label files / verified negatives):
@@ -74,8 +74,8 @@ Box-level results per category (images with label files / verified negatives):
 | YOLO11s | fog_mist | 1 | 0.000 | 0.000 | 0.000 | 0 | 0 |
 | YOLO11s | non_vehicle_smoke | 2 | 0.000 | 0.000 | 0.000 | 4 | 0 |
 | YOLO11s | no_smoke | 1 | 0.000 | 0.000 | 0.000 | 0 | 0 |
-| Faster R-CNN (MobileNetV3-FPN) | fog_mist | 1 | 0.000 | 0.000 | 0.000 | 0 | 0 |
-| Faster R-CNN (MobileNetV3-FPN) | non_vehicle_smoke | 2 | 0.000 | 0.000 | 0.000 | 0 | 0 |
+| Faster R-CNN (MobileNetV3-FPN) | fog_mist | 1 | 0.000 | 0.000 | 0.000 | 1 | 0 |
+| Faster R-CNN (MobileNetV3-FPN) | non_vehicle_smoke | 2 | 0.000 | 0.000 | 0.000 | 1 | 0 |
 | Faster R-CNN (MobileNetV3-FPN) | no_smoke | 1 | 0.000 | 0.000 | 0.000 | 0 | 0 |
 
 ### Table 5. Vehicle-smoke association rules (16 labelled pairs, 13 positive)

@@ -341,13 +341,13 @@
   },
   "frcnn": {
     "display": "Faster R-CNN (MobileNetV3-FPN)",
-    "threshold": 0.8,
-    "tp": 2,
-    "fp": 0,
-    "fn": 4,
-    "tn": 4,
-    "false_positive_rate": 0.0,
-    "recall_on_smoke_images": 0.3333333333333333,
+    "threshold": 0.9,
+    "tp": 3,
+    "fp": 2,
+    "fn": 3,
+    "tn": 2,
+    "false_positive_rate": 0.5,
+    "recall_on_smoke_images": 0.5,
     "n_smoke_images": 6,
     "n_negative_images": 4,
     "per_category": {
@@ -361,7 +361,7 @@
       },
       "light_smoke": {
         "n": 2,
-        "detected": 0
+        "detected": 1
       },
       "multi_vehicle": {
         "n": 2,
@@ -369,11 +369,11 @@
       },
       "fog_mist": {
         "n": 1,
-        "detected": 0
+        "detected": 1
       },
       "non_vehicle_smoke": {
         "n": 2,
-        "detected": 0
+        "detected": 1
       },
       "no_smoke": {
         "n": 1,
@@ -386,7 +386,7 @@
         "recall": 0.0,
         "f1": 0.0,
         "tp": 0,
-        "fp": 0,
+        "fp": 2,
         "fn": 0,
         "n_gt": 0
       },
@@ -396,7 +396,7 @@
           "recall": 0.0,
           "f1": 0.0,
           "tp": 0,
-          "fp": 0,
+          "fp": 1,
           "fn": 0,
           "n_gt": 0,
           "n_images": 1
@@ -406,7 +406,7 @@
           "recall": 0.0,
           "f1": 0.0,
           "tp": 0,
-          "fp": 0,
+          "fp": 1,
           "fn": 0,
           "n_gt": 0,
           "n_images": 2

@@ -39,13 +39,13 @@ yolo11s,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.
 yolo11s,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.3939,1
 yolo11s,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.5329,1
 yolo11s,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.0389,0
-frcnn,photos for test/Charcoal Dzire Emitting Exhaust on City Road.png,smoke,1,0.9643,1
-frcnn,photos for test/heavy_smoke_car_test.png,heavy_smoke,1,0.9984,1
-frcnn,photos for test/Hyundai Verna Light Smoke Detection.png,light_smoke,1,0.0261,0
-frcnn,photos for test/Indian Highway Traffic with Truck and MTC Bus.png,multi_vehicle,1,0.6627,0
-frcnn,photos for test/Misty Chennai Street Traffic.png,fog_mist,0,0.6861,0
-frcnn,photos for test/Motorcycle Commute Through the City.png,light_smoke,1,0.3638,0
-frcnn,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.6858,0
-frcnn,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.3906,0
-frcnn,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.6625,0
-frcnn,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.0013,0
+frcnn,photos for test/Charcoal Dzire Emitting Exhaust on City Road.png,smoke,1,0.9644,1
+frcnn,photos for test/heavy_smoke_car_test.png,heavy_smoke,1,0.999,1
+frcnn,photos for test/Hyundai Verna Light Smoke Detection.png,light_smoke,1,0.0,0
+frcnn,photos for test/Indian Highway Traffic with Truck and MTC Bus.png,multi_vehicle,1,0.2406,0
+frcnn,photos for test/Misty Chennai Street Traffic.png,fog_mist,0,0.9887,1
+frcnn,photos for test/Motorcycle Commute Through the City.png,light_smoke,1,0.9959,1
+frcnn,photos for test/Smoky Bin on a Campus Walkway.png,non_vehicle_smoke,0,0.955,1
+frcnn,photos for test/Smoky City Highway Commute.png,multi_vehicle,1,0.8587,0
+frcnn,photos for test/Smoky Traffic on a Tree-Lined Road.png,non_vehicle_smoke,0,0.8209,0
+frcnn,photos for test/Toyota Corolla on a Sunlit City Road - no smoke.png,no_smoke,0,0.0,0

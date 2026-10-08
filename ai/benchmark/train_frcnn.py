@@ -2,9 +2,17 @@
 
     python train_frcnn.py --backbone mobilenet            # default, CPU-friendly
     python train_frcnn.py --backbone resnet50 --device cuda   # classic R50-FPN, needs a GPU in practice
+
+    # Same budget as the four YOLO models (50 epochs, batch 8; lr scaled linearly with batch size):
+    python train_frcnn.py --backbone mobilenet --device cuda --match-yolo
+    # If batch 8 runs out of GPU memory (4 GB card), keep the epoch count and the original batch size:
+    python train_frcnn.py --backbone mobilenet --device cuda --epochs 50
+
+A previous run in runs/frcnn is moved to runs/frcnn_prev_<N>ep before training, never overwritten.
 """
 import argparse
 import csv
+import json
 import random
 import time
 
@@ -61,19 +69,43 @@ def eval_val(model, device, gts):
     return summarize(build_stats(preds, gts), 0.25)
 
 
+def backup_previous(out_dir):
+    """Move an existing run aside (e.g. runs/frcnn -> runs/frcnn_prev_30ep) so it is never overwritten."""
+    if not (out_dir / "best.pt").exists():
+        return None
+    try:
+        old_ep = json.load(open(out_dir / "train_args.json"))["epochs"]
+    except Exception:
+        old_ep = "unknown"
+    dst = out_dir.parent / f"{out_dir.name}_prev_{old_ep}ep"
+    n = 1
+    while dst.exists():
+        n += 1
+        dst = out_dir.parent / f"{out_dir.name}_prev_{old_ep}ep_{n}"
+    out_dir.rename(dst)
+    return dst
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--backbone", default="mobilenet", choices=["mobilenet", "resnet50"])
-    ap.add_argument("--epochs", type=int, default=30)
+    ap.add_argument("--epochs", type=int, default=50)
     ap.add_argument("--batch", type=int, default=4)
     ap.add_argument("--lr", type=float, default=0.005)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--workers", type=int, default=0)
+    ap.add_argument("--match-yolo", action="store_true",
+                    help="use the YOLO budget: 50 epochs, batch 8, lr 0.01 (0.00125 per image, linear scaling)")
     args = ap.parse_args()
+    if args.match_yolo:
+        args.epochs, args.batch, args.lr = 50, 8, 0.01
 
     ensure_dirs()
     random.seed(SEED); np.random.seed(SEED); torch.manual_seed(SEED)
     out_dir = RUNS / "frcnn"
+    moved = backup_previous(out_dir)
+    if moved:
+        print(f"previous run kept at {moved}")
     out_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device(norm_device(args.device))
 
@@ -91,7 +123,7 @@ def main():
     cfg = {"backbone": args.backbone, "epochs": args.epochs, "batch": args.batch, "lr": args.lr,
            "optimizer": "SGD(momentum=0.9, wd=5e-4)", "schedule": "MultiStep(0.67,0.9; gamma 0.1) + linear warmup",
            "augmentation": "hflip + brightness/contrast jitter (no mosaic)", "imgsz": 640, "seed": SEED,
-           "pretrained": "COCO_V1", "env": env_info()}
+           "pretrained": "COCO_V1", "matched_to_yolo_budget": bool(args.match_yolo), "env": env_info()}
     save_json(cfg, out_dir / "train_args.json")
 
     log = open(out_dir / "results.csv", "w", newline="")

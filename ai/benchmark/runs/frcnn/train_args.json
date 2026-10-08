@@ -1,14 +1,15 @@
 {
   "backbone": "mobilenet",
-  "epochs": 30,
-  "batch": 4,
-  "lr": 0.005,
+  "epochs": 50,
+  "batch": 8,
+  "lr": 0.01,
   "optimizer": "SGD(momentum=0.9, wd=5e-4)",
   "schedule": "MultiStep(0.67,0.9; gamma 0.1) + linear warmup",
   "augmentation": "hflip + brightness/contrast jitter (no mosaic)",
   "imgsz": 640,
   "seed": 0,
   "pretrained": "COCO_V1",
+  "matched_to_yolo_budget": true,
   "env": {
     "python": "3.12.4",
     "platform": "Windows-11-10.0.26200-SP0",
